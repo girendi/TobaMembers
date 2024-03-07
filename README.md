@@ -22,8 +22,9 @@ https://github.com/girendi/TobaMembers/assets/24579720/673c547f-02ee-4a1e-9ae2-2
 
 ### Setup
 <ol>
-  <li>Clone this repository and import into Android Studio
-    <code>https://github.com/girendi/TobaMembers.git</code>.
+  <li>Clone this repository and import into Android Studio.
+    
+    https://github.com/girendi/TobaMembers.git
   </li>
   <li>Build the project in Android Studio.</li>
   <li>Run the application on an emulator or physical device.</li>
