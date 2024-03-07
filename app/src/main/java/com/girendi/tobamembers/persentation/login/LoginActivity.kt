@@ -9,11 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.girendi.tobamembers.R
 import com.girendi.tobamembers.core.data.UiState
+import com.girendi.tobamembers.core.ui.CustomTextWatcher
 import com.girendi.tobamembers.databinding.ActivityLoginBinding
 import com.girendi.tobamembers.persentation.admin.AdminActivity
 import com.girendi.tobamembers.persentation.main.MainActivity
 import com.girendi.tobamembers.persentation.register.RegisterActivity
-import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -75,20 +75,28 @@ class LoginActivity: AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun handleStreamText() {
-        val emailStream = RxTextView.textChanges(binding.edEmail)
-            .skipInitialValue()
-            .map { email ->
-                !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-            }
+        val emailStream = Observable.create { emitter ->
+            binding.edPassword.addTextChangedListener(
+                CustomTextWatcher { text ->
+                    runOnUiThread {
+                        emitter.onNext(!Patterns.EMAIL_ADDRESS.matcher(text).matches())
+                    }
+                }
+            )
+        }
         emailStream.subscribe {
             showEmailExistAlert(it)
         }
 
-        val passwordStream = RxTextView.textChanges(binding.edPassword)
-            .skipInitialValue()
-            .map { password ->
-                password.length < 6
-            }
+        val passwordStream = Observable.create { emitter ->
+            binding.edPassword.addTextChangedListener(
+                CustomTextWatcher { text ->
+                    runOnUiThread {
+                        emitter.onNext(text.length < 6)
+                    }
+                }
+            )
+        }
         passwordStream.subscribe {
             showPasswordMinimalAlert(it)
         }
