@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TobaMembers</string>
+    <string name="todo">TODO</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="enter_your_details_below">Enter your details below</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="get_started_free">Get started free.</string>
+    <string name="free_forever_no_credit_card_needed">Free forever. No credit card needed.</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="role">Role</string>
+    <string name="email_not_valid">Email not valid!</string>
+    <string name="username_not_valid">Username not valid!</string>
+    <string name="password_not_valid">Password not valid!</string>
+    <string name="role_not_valid">Role not valid!</string>
+    <string name="welcome">Welcome!</string>
+</resources>
