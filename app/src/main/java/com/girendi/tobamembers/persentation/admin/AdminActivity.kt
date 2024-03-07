@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.girendi.tobamembers.R
 import com.girendi.tobamembers.core.data.UiState
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.ui.SimpleRecyclerAdapter
 import com.girendi.tobamembers.databinding.ActivityAdminBinding
 import com.girendi.tobamembers.databinding.DialogChangeDataBinding
@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AdminActivity: AppCompatActivity() {
     private lateinit var binding: ActivityAdminBinding
-    private lateinit var adapterUser: SimpleRecyclerAdapter<UserEntity>
+    private lateinit var adapterUser: SimpleRecyclerAdapter<User>
     private val viewModelAdmin: AdminViewModel by viewModel()
     private var userId: Int = 0
 
@@ -105,7 +105,7 @@ class AdminActivity: AppCompatActivity() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun showDialogConfirmation(item: UserEntity) {
+    private fun showDialogConfirmation(item: User) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Input your password!")
         val dialogBinding = DialogConfirmationPasswordBinding.inflate(layoutInflater)
@@ -120,7 +120,7 @@ class AdminActivity: AppCompatActivity() {
         builder.show()
     }
 
-    private fun showDialogUpdateUser(item: UserEntity) {
+    private fun showDialogUpdateUser(item: User) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Update the data!")
         val dialogBinding = DialogChangeDataBinding.inflate(layoutInflater)
@@ -137,7 +137,7 @@ class AdminActivity: AppCompatActivity() {
         dpRole.setText(item.role)
         builder.setView(dialogBinding.root)
         builder.setPositiveButton("OK") { _, _ ->
-            val newData = UserEntity(
+            val newData = User(
                 id = item.id,
                 username = edUsername.text.toString(),
                 email = edEmail.text.toString(),

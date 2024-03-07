@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.girendi.tobamembers.core.data.Result
 import com.girendi.tobamembers.core.data.UiState
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.domain.usecase.RegisterUserUseCase
 import kotlinx.coroutines.launch
 
@@ -32,7 +32,7 @@ class RegisterViewModel(private val registerUserUseCase: RegisterUserUseCase) : 
     }
 
     fun registerUser(username: String, email: String, role: String, password: String) {
-        val newUser = UserEntity(
+        val newUser = User(
             username = username,
             email = email,
             role = role,

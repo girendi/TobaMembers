@@ -2,7 +2,7 @@ package com.girendi.tobamembers.core.data.source.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.domain.repository.SessionManagerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +20,7 @@ class SharedPreferencesSessionManagerRepositoryImpl(private val context: Context
         const val ROLE_KEY = "role"
     }
 
-    override fun saveUserSession(userSession: UserEntity) {
+    override fun saveUserSession(userSession: User) {
         with(prefs.edit()) {
             putInt(USER_ID_KEY, userSession.id)
             putString(USERNAME_KEY, userSession.username)
@@ -30,7 +30,7 @@ class SharedPreferencesSessionManagerRepositoryImpl(private val context: Context
         }
     }
 
-    override fun getUserSession(): Flow<UserEntity?> = flow {
+    override fun getUserSession(): Flow<User?> = flow {
         val id = prefs.getInt(USER_ID_KEY, -1)
         if (id == -1) {
             emit(null)
@@ -40,7 +40,7 @@ class SharedPreferencesSessionManagerRepositoryImpl(private val context: Context
             val role = prefs.getString(ROLE_KEY, null) ?: ""
             if (username != null && email != null) {
                 emit(
-                    UserEntity(
+                    User(
                         id = id,
                         username = username,
                         email = email,
