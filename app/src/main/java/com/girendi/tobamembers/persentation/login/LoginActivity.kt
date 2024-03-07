@@ -76,7 +76,7 @@ class LoginActivity: AppCompatActivity() {
     @SuppressLint("CheckResult")
     private fun handleStreamText() {
         val emailStream = Observable.create { emitter ->
-            binding.edPassword.addTextChangedListener(
+            binding.edEmail.addTextChangedListener(
                 CustomTextWatcher { text ->
                     runOnUiThread {
                         emitter.onNext(!Patterns.EMAIL_ADDRESS.matcher(text).matches())
