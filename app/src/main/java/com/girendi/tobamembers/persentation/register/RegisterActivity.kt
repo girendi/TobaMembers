@@ -2,7 +2,6 @@ package com.girendi.tobamembers.persentation.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -11,7 +10,6 @@ import com.girendi.tobamembers.R
 import com.girendi.tobamembers.core.data.UiState
 import com.girendi.tobamembers.core.ui.CustomTextWatcher
 import com.girendi.tobamembers.databinding.ActivityRegisterBinding
-import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -103,11 +101,15 @@ class RegisterActivity : AppCompatActivity() {
             }
         )
 
-        val passwordStream = RxTextView.textChanges(binding.edPassword)
-            .skipInitialValue()
-            .map { password ->
-                password.length < 6
-            }
+        val passwordStream = Observable.create { emitter ->
+            binding.edPassword.addTextChangedListener(
+                CustomTextWatcher { text ->
+                    runOnUiThread {
+                        emitter.onNext(text.length < 6)
+                    }
+                }
+            )
+        }
         passwordStream.subscribe {
             showPasswordMinimalAlert(it)
         }

@@ -3,7 +3,6 @@ package com.girendi.tobamembers.core.domain.usecase
 import com.girendi.tobamembers.core.data.Result
 import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
 import com.girendi.tobamembers.core.domain.repository.UserRepository
-import kotlinx.coroutines.flow.Flow
 
 class RegisterUserUseCase(
     private val userRepository: UserRepository
