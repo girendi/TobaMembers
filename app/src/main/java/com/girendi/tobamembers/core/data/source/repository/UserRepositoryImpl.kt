@@ -1,83 +1,66 @@
 package com.girendi.tobamembers.core.data.source.repository
 
-import android.database.sqlite.SQLiteConstraintException
 import com.girendi.tobamembers.core.data.Result
 import com.girendi.tobamembers.core.data.source.local.LocalDataSource
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.domain.repository.UserRepository
+import com.girendi.tobamembers.core.utils.DataMapperUser
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class UserRepositoryImpl(private val localDataSource: LocalDataSource) : UserRepository {
 
-    override fun getAllUser(): Flow<List<UserEntity>> =
+    override fun getAllUser(): Flow<List<User>> =
         localDataSource.getAllUser()
+            .map { entities -> entities.map { DataMapperUser.toDomainModel(it) } }
 
-    override fun getUserByEmailAndPassword(email: String, password: String): Flow<UserEntity?> =
+    override fun getUserByEmailAndPassword(email: String, password: String): Flow<User?> =
         localDataSource.getUserByEmailAndPassword(email, password)
+            .map { DataMapperUser.toDomainModel(it!!) }
 
-    override suspend fun deleteUser(userEntity: UserEntity) =
-        localDataSource.deleteUser(userEntity)
+    override suspend fun deleteUser(userEntity: User) =
+        localDataSource.deleteUser(DataMapperUser.toEntityModel(userEntity))
 
-    override suspend fun updateUser(userEntity: UserEntity): Result<Boolean> =
-        try {
-            val invalidUsername = localDataSource.countUsersWithUsername(userEntity.username, userEntity.id) > 0
-            val invalidEmail = localDataSource.countUsersWithEmail(userEntity.email, userEntity.id) > 0
+    override suspend fun updateUser(userEntity: User): Result<Boolean> {
+        val isUsernameInvalid = localDataSource.countUsersWithUsername(userEntity.username, userEntity.id) > 0
+        val isEmailInvalid = localDataSource.countUsersWithEmail(userEntity.email, userEntity.id) > 0
 
-            if(invalidUsername || invalidEmail) {
-                Result.Success(false)
-            } else {
-                localDataSource.updateUser(userEntity)
+        return when {
+            isUsernameInvalid || isEmailInvalid -> Result.Success(false)
+            else -> {
+                localDataSource.updateUser(DataMapperUser.toEntityModel(userEntity))
                 Result.Success(true)
             }
-        } catch (e: Exception) {
-            Result.Error(e)
         }
+    }
 
-    override suspend fun insertUser(userEntity: UserEntity): Result<Boolean> =
-        try {
-            val status = localDataSource.insertUser(userEntity) > 0
-            Result.Success(status)
-        } catch (e: SQLiteConstraintException) {
-            Result.Error(e)
-        }
+    override suspend fun insertUser(userEntity: User): Result<Boolean> =
+        localDataSource.insertUser(DataMapperUser.toEntityModel(userEntity)).toResult()
 
     override suspend fun countUsersWithUsername(username: String): Result<Boolean> =
-        try {
-            val status = localDataSource.countUsersWithUsername(username) > 0
-            Result.Success(status)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        localDataSource.countUsersWithUsername(username).toResult()
 
     override suspend fun countUsersWithUsername(username: String, userId: Int): Result<Boolean> =
-        try {
-            val status = localDataSource.countUsersWithUsername(username, userId) > 0
-            Result.Success(status)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        localDataSource.countUsersWithUsername(username, userId).toResult()
 
     override suspend fun countUsersWithEmail(email: String): Result<Boolean> =
-        try {
-            val status = localDataSource.countUsersWithEmail(email) > 0
-            Result.Success(status)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        localDataSource.countUsersWithEmail(email).toResult()
 
     override suspend fun countUsersWithEmail(email: String, userId: Int): Result<Boolean> =
-        try {
-            val status = localDataSource.countUsersWithEmail(email, userId) > 0
-            Result.Success(status)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        localDataSource.countUsersWithEmail(email, userId).toResult()
 
     override suspend fun validateUserByPassword(userId: Int, password: String): Result<Boolean> =
-        try {
-            val status = localDataSource.validateUserByPassword(userId, password) > 0
-            Result.Success(status)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+        localDataSource.validateUserByPassword(userId, password).toResult()
+
+    private fun Long.toResult(): Result<Boolean> = try {
+        Result.Success(this > 0)
+    } catch (e: Exception) {
+        Result.Error(e)
+    }
+
+    private fun Int.toResult(): Result<Boolean> = try {
+        Result.Success(this > 0)
+    } catch (e: Exception) {
+        Result.Error(e)
+    }
 }

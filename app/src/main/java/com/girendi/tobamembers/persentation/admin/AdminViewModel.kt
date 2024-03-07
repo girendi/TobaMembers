@@ -7,7 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.girendi.tobamembers.core.data.Result
 import com.girendi.tobamembers.core.data.UiState
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.domain.usecase.AdminUseCase
 import kotlinx.coroutines.launch
 
@@ -15,9 +15,9 @@ class AdminViewModel(private val adminUseCase: AdminUseCase): ViewModel() {
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> = _uiState
 
-    val users: LiveData<List<UserEntity>> = adminUseCase.getAllUser().asLiveData()
+    val users: LiveData<List<User>> = adminUseCase.getAllUser().asLiveData()
 
-    val userSession: LiveData<UserEntity?> = adminUseCase.getUserSession().asLiveData()
+    val userSession: LiveData<User?> = adminUseCase.getUserSession().asLiveData()
 
     fun logoutUser() {
         viewModelScope.launch {
@@ -25,7 +25,7 @@ class AdminViewModel(private val adminUseCase: AdminUseCase): ViewModel() {
         }
     }
 
-    fun validateUserPassword(userId: Int, password: String, item: UserEntity) {
+    fun validateUserPassword(userId: Int, password: String, item: User) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             when(val result = adminUseCase.validateUserByPassword(userId, password)) {
@@ -47,13 +47,13 @@ class AdminViewModel(private val adminUseCase: AdminUseCase): ViewModel() {
         }
     }
 
-    private fun deleteUser(item: UserEntity) {
+    private fun deleteUser(item: User) {
         viewModelScope.launch {
             adminUseCase.deleteUser(item)
         }
     }
 
-    fun updateUser(item: UserEntity) {
+    fun updateUser(item: User) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             when(val result = adminUseCase.updateUser(item)) {

@@ -1,10 +1,10 @@
 package com.girendi.tobamembers.core.domain.repository
 
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
+import com.girendi.tobamembers.core.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface SessionManagerRepository {
-    fun saveUserSession(userSession: UserEntity)
-    fun getUserSession(): Flow<UserEntity?>
+    fun saveUserSession(userSession: User)
+    fun getUserSession(): Flow<User?>
     fun clearSession()
 }

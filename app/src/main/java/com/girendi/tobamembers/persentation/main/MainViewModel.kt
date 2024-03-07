@@ -7,8 +7,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.girendi.tobamembers.core.data.Result
 import com.girendi.tobamembers.core.data.UiState
-import com.girendi.tobamembers.core.data.source.local.entity.UserEntity
 import com.girendi.tobamembers.core.data.source.remote.response.PhotoResponse
+import com.girendi.tobamembers.core.domain.model.User
 import com.girendi.tobamembers.core.domain.usecase.MainUseCase
 import kotlinx.coroutines.launch
 
@@ -19,7 +19,7 @@ class MainViewModel(private val mainUseCase: MainUseCase) : ViewModel() {
     private val _listPhoto = MutableLiveData<List<PhotoResponse>>()
     val listPhoto: LiveData<List<PhotoResponse>> = _listPhoto
 
-    val userSession: LiveData<UserEntity?> = mainUseCase.getUserSession().asLiveData()
+    val userSession: LiveData<User?> = mainUseCase.getUserSession().asLiveData()
 
     private var currentPage = 1
     private var isLastPage = false
